@@ -1,11 +1,10 @@
 # TDX運輸資料流通服務API介接範例程式碼說明
 
 
-為使開發者能快速在M2M環境下介接使用運輸資料流通服務平臺（TDX）開放之交通領域資料服務，在此提供數種程式語言的範例程式碼提供開發者做參考。
+為使開發者能快速在M2M環境下介接使用運輸資料流通服務平臺（TDX）開放之交通領域資料服務API，在此提供數種程式語言的範例程式碼提供開發者做參考。
 
 ## API認證機制
----
-TDX使用OIDC Client Credentials流程進行身份認證，認證完成後即取得Access Token，並透過Access Token存取TDX API服務。詳細步驟說明如下:
+TDX API皆使用OIDC Client Credentials流程進行身份認證，認證完成後即取得Access Token，將Access Token帶入即可存取TDX API服務。詳細步驟說明如下:
 
 ### 1. 註冊為TDX會員 
 於[TDX官網](https://tpe-tdx-connect.transportdata.tw/register)註冊為TDX會員，完成Email驗證、帳號經管理員審核後即可登入TDX網站。
