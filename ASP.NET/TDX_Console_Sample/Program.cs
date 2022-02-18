@@ -19,8 +19,8 @@ namespace TDX_Console_Sample
                     new List<KeyValuePair<string, string>>
                         {
                             new KeyValuePair<string, string>("grant_type", "client_credentials"),
-                            new KeyValuePair<string, string>("client_id", "cano.cheng-cf7f9b1e-802d-4409"),
-                            new KeyValuePair<string, string>("client_secret", "adccd264-c713-4b04-8bf0-d25e4ff12278"),
+                            new KeyValuePair<string, string>("client_id", "XXXXXXXXXX-XXXXXXXX-XXXX-XXXX"),
+                            new KeyValuePair<string, string>("client_secret", "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"),
                         }
                     );
                 httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/x-www-form-urlencoded"));
