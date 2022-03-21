@@ -10,10 +10,10 @@ TDX API皆使用OIDC Client Credentials流程進行身份認證，認證完成�
 於[TDX官網](https://tpe-tdx-connect.transportdata.tw/register)註冊為TDX會員，完成Email驗證、帳號經管理員審核後即可登入TDX網站。
 
 ### 2. 取得API金鑰 
-於[TDX會員專區](https://tpe-tdx-connect.transportdata.tw/user/dataservice/key)取得API金鑰(包含Client Id和Client Secret)。可視開發測試需求自行建立多組API金鑰。
+於[TDX會員專區](https://tpe-tdx-connect.transportdata.tw/user/dataservice/key)取得API金鑰(包含Client Id和Client Secret)。可視開發測試需求自行建立多組API金鑰(至多3組)。
 
 ### 3. 取得取得Access Token
-使用HTTP POST方法、帶入Client Id和Client Secret進行驗證並取得Access token。以下為curl範例:
+取得token的url固定為 https://tpe-tdx-connect.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token ，使用HTTP POST方法、帶入Client Id和Client Secret進行驗證以取得Access token。以下為curl範例:
 ```
 curl --request POST \
      --url 'https://tpe-tdx-connect.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token' \
@@ -22,7 +22,7 @@ curl --request POST \
      --data client_id=YOUR_CLIENT_ID \
      --data client_secret=YOUR_CLIENT_SECRET \
 ```
-參數說明如下:
+data參數說明如下:
 
 | 參數 | 描述 |
 | ------ | ------ |
@@ -34,7 +34,7 @@ curl --request POST \
 ```
 {
     "access_token": "eyJh...",
-    "expires_in": 7200,
+    "expires_in": 86400,
     "token_type": "Bearer",
     (...省略其他內容)
 }
@@ -43,7 +43,7 @@ curl --request POST \
 | 參數 | 描述 |
 | ------ | ------ |
 | access_token | 用於存取API服務的token，格式為JWT |
-| expires_in | token的有效期限，單位為秒 |
+| expires_in | token的有效期限，單位為秒，預設為86400秒(1天) |
 | token_type | token類型，固定為"Bearer" |
 
 
