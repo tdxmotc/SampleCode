@@ -6,11 +6,11 @@
 ## API認證機制
 TDX API皆使用OIDC Client Credentials流程進行身份認證，認證完成後即取得Access Token，將Access Token帶入即可存取TDX API服務。詳細步驟說明如下:
 
-### 1. 註冊為TDX會員 
-於[TDX官網](https://tdx.transportdata.tw/register)註冊為TDX會員，完成Email驗證、帳號經管理員審核後即可登入TDX網站。
+### 1. 註冊為TDX會員
+於<a href="https://tdx.transportdata.tw/register" target="_blank">TDX官網</a>註冊為TDX會員，完成Email驗證、帳號經管理員審核後即可登入TDX網站。
 
 ### 2. 取得API金鑰 
-於[TDX會員專區](https://tdx.transportdata.tw/user/dataservice/key)取得API金鑰(包含Client Id和Client Secret)，可視開發測試需求自行建立多組API金鑰(至多3組)。
+登入TDX網站後，於<a href="https://tdx.transportdata.tw/user/dataservice/key" target="_blank">TDX會員中心</a>取得API金鑰(包含Client Id和Client Secret)，可視開發測試需求自行建立多組API金鑰(至多3組)。
 
 ### 3. 取得取得Access Token
 取得token的url固定為 https://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token ，使用HTTP POST方法、帶入Client Id和Client Secret進行驗證以取得Access token。以下為curl範例:
