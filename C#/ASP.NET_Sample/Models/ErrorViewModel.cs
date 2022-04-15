@@ -1,6 +1,6 @@
 using System;
 
-namespace TDX_Sample.Models
+namespace ASP.NET_Sample.Models
 {
     public class ErrorViewModel
     {

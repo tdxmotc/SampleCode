@@ -25,7 +25,7 @@ namespace TDX_Console_Sample
                     );
                 httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/x-www-form-urlencoded"));
 
-                var response = httpClient.PostAsync("https://tpe-tdx-connect.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token", formData).Result;
+                var response = httpClient.PostAsync("https://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token", formData).Result;
                 var responseStr = response.Content.ReadAsStringAsync().Result;
                 Console.WriteLine("Token:");
                 Console.WriteLine(responseStr);
@@ -40,7 +40,7 @@ namespace TDX_Console_Sample
             using (HttpClient client = new HttpClient())
             {
                 client.DefaultRequestHeaders.Add("authorization", $"Bearer {token.access_token}");
-                var apiResponse = client.GetStringAsync("https://tpe-tdx-connect.transportdata.tw/api/basic/v2/Rail/TRA/LiveTrainDelay?$top=30&$format=JSON").Result;
+                var apiResponse = client.GetStringAsync("https://tdx.transportdata.tw/api/basic/v2/Rail/TRA/LiveTrainDelay?$top=30&$format=JSON").Result;
                 Console.WriteLine(apiResponse);
             }
         }

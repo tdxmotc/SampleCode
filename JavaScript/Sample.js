@@ -11,7 +11,7 @@ function GetAuthorizationHeader() {
         client_secret: "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
     };
     
-    let auth_url = "https://tpe-tdx-connect.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token";
+    let auth_url = "https://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token";
         
     $.ajax({
         type: "POST",
@@ -37,7 +37,7 @@ function GetApiResponse(){
     if(accesstoken !=undefined){
         $.ajax({
             type: 'GET',
-            url: 'https://tpe-tdx-connect.transportdata.tw/api/basic/v2/Rail/TRA/LiveTrainDelay?$top=30&$format=JSON',             
+            url: 'https://tdx.transportdata.tw/api/basic/v2/Rail/TRA/LiveTrainDelay?$top=30&$format=JSON',             
             headers: {
                 "authorization": "Bearer " + accesstoken.access_token,                
               },            
