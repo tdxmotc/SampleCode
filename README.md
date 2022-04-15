@@ -27,8 +27,8 @@ data參數說明如下:
 | 參數 | 描述 |
 | ------ | ------ |
 | grant_type | 固定使用"client_credentials" |
-| client_id | 您的Client Id，可從TDX網站會員專區取得 |
-| client_secret | 您的Client Secret，可從TDX網站會員專區取得 |
+| client_id | 您的Client Id，可從TDX會員中心取得 |
+| client_secret | 您的Client Secret，可從TDX會員中心取得 |
 
 若帶入的參數正確，可收到HTTP 200回應與訊息:
 ```
