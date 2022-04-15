@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace TDX_Sample.Models
+namespace ASP.NET_Sample.Models
 {
     public class AccessToken
     {

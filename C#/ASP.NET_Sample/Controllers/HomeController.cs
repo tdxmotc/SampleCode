@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ASP.NET_Sample.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
@@ -9,15 +10,14 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using TDX_Sample.Models;
 
-namespace TDX_Sample.Controllers
+namespace ASP.NET_Sample.Controllers
 {
     public class HomeController : Controller
     {
         private readonly IHttpClientFactory _clientFactory;
-        private readonly string tokenUri = $"https://tpe-tdx-connect.transportdata.tw";
-        private readonly string apiUri = $"https://tpe-tdx-connect.transportdata.tw/api/basic/v2/Rail/TRA/LiveTrainDelay";
+        private readonly string tokenUri = $"https://tdx.transportdata.tw";
+        private readonly string apiUri = $"https://tdx.transportdata.tw/api/basic/v2/Rail/TRA/LiveTrainDelay";
         public HomeController(IHttpClientFactory clientFactory)
         {
             _clientFactory = clientFactory;
@@ -27,7 +27,7 @@ namespace TDX_Sample.Controllers
         {
             var accessToken = GetToken(tokenUri).Result;
             ViewBag.AccessToken = accessToken.access_token;
-            
+
             var apiResponse = Get(GetParameters(), apiUri, accessToken.access_token).Result;
             ViewBag.ApiResponse = apiResponse;
 
@@ -35,8 +35,8 @@ namespace TDX_Sample.Controllers
         }
 
         public async Task<AccessToken> GetToken(string requestUri)
-        {            
-            string baseUrl = $"https://tpe-tdx-connect.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token";            
+        {
+            string baseUrl = $"https://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token";
 
             var parameters = new Dictionary<string, string>()
             {
@@ -56,7 +56,7 @@ namespace TDX_Sample.Controllers
             return JsonConvert.DeserializeObject<AccessToken>(responseContent);
         }
 
-        private Dictionary<string,string> GetParameters()
+        private Dictionary<string, string> GetParameters()
         {
             return new Dictionary<string, string>()
             {
@@ -72,15 +72,15 @@ namespace TDX_Sample.Controllers
 
 
         public async Task<string> Get(Dictionary<string, string> parameters, string requestUri, string token)
-        {            
+        {
             var client = _clientFactory.CreateClient();
-            
+
             if (!string.IsNullOrWhiteSpace(token))
             {
                 client.DefaultRequestHeaders.Add("authorization", $"Bearer {token}");
             }
             //client.DefaultRequestHeaders.Add("Content-Type", "application/json; charset=utf-8");
-                        
+
             if (parameters.Any())
             {
                 var strParam = string.Join("&", parameters.Where(d => !string.IsNullOrWhiteSpace(d.Value)).Select(o => o.Key + "=" + o.Value));
@@ -88,7 +88,7 @@ namespace TDX_Sample.Controllers
             }
             client.BaseAddress = new Uri(requestUri);
 
-            var response =  await client.GetAsync(requestUri).ConfigureAwait(false);
+            var response = await client.GetAsync(requestUri).ConfigureAwait(false);
 
             var responseContent = await response.Content.ReadAsStringAsync();
 
