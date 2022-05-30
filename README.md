@@ -3,6 +3,9 @@
 
 為使開發者能快速在M2M環境下介接使用TDX運輸資料流通服務平臺之交通領域資料服務API，在此提供數種程式語言的範例程式碼提供開發者做參考。
 
+## API使用次數限制
+TDX API現階段呼叫頻率限制為 **每個呼叫來源IP每秒最多50次 (不分API金鑰)**。
+
 ## API認證機制
 TDX API皆使用OIDC Client Credentials流程進行身份認證，認證完成後即取得Access Token，將Access Token帶入即可存取TDX API服務。詳細步驟說明如下:
 
