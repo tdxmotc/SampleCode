@@ -1,2 +1,7 @@
 Node.js/node_modules
 /ASP.NET/packages/
+.Rproj.user
+.Rhistory
+.Rdata
+.httr-oauth
+.DS_Store
