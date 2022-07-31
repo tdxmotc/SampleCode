@@ -12,14 +12,11 @@ const updateBufferDuration = 1 * time.Hour
 // authFailedRetryInterval token 更新失敗時，重新嘗試的間隔時間
 const authFailedRetryInterval = 3 * time.Minute
 
-// apiBasicBaseURL tdx 基礎服務 API 的 Base URL
-const apiBasicBaseURL string = "https://tdx.transportdata.tw/api/basic"
-
 // TDXController TDX Controller
 //
 // 取得 authorization 與自動更新 access token
 type TDXController struct {
-	sync.RWMutex
+	tkRWMute      sync.RWMutex
 	cID           string // Client Id
 	cSEC          string // Client Secret
 	authorization string // authorization header value
@@ -49,8 +46,8 @@ func NewTDXController(cID, cSEC string) (resTC *TDXController, err error) {
 
 // GetAuthorization 取得 authorization
 func (tc *TDXController) GetAuthorization() (authorization string) {
-	tc.RLock()
+	tc.tkRWMute.RLock()
 	authorization = tc.authorization
-	tc.RUnlock()
+	tc.tkRWMute.RUnlock()
 	return
 }

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -32,7 +33,8 @@ func main() {
 	queryParams.Set("$format", "JSON")
 
 	client := &http.Client{}
-	req, err := http.NewRequest("GET", sampleAPIURL+"?"+queryParams.Encode(), nil)
+	req, err := http.NewRequestWithContext(context.Background(),
+		"GET", sampleAPIURL+"?"+queryParams.Encode(), http.NoBody)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -47,7 +49,6 @@ func main() {
 		failedMsg, _ := ioutil.ReadAll(rsp.Body)
 		log.Fatalf("%d %s", rsp.StatusCode, failedMsg)
 	}
-	defer rsp.Body.Close()
 
 	// 解析 API 到預定好的 struct
 	// 為求方便使用 map[string]interface{} 做示範
@@ -55,13 +56,15 @@ func main() {
 	jDecoder := json.NewDecoder(rsp.Body)
 	err = jDecoder.Decode(&tmpStruct)
 	if err != nil {
+		rsp.Body.Close()
 		log.Fatal(err)
 	}
+	rsp.Body.Close()
 
 	// 顯示成功取得的資料
 	jEncoder := json.NewEncoder(os.Stdout)
 	jEncoder.SetIndent("", "\t")
-	jEncoder.Encode(tmpStruct)
+	_ = jEncoder.Encode(tmpStruct)
 
 	fmt.Println("\nsuccess : )")
 }
