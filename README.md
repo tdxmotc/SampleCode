@@ -4,7 +4,8 @@
 為使開發者能快速在M2M環境下介接使用TDX運輸資料流通服務平臺之交通領域資料服務API，在此提供數種程式語言的範例程式碼提供開發者做參考。
 
 ## API使用次數限制
-TDX API現階段呼叫頻率限制為 **每個呼叫來源IP每秒最多50次 (不分API金鑰)**。
+TDX API現階段呼叫頻率限制為 **每個呼叫來源IP每秒最多50次 (不分API金鑰)**。  
+未來導入會員訂閱機制時，將改為使用API Key為單位來做頻率限制 (不同訂閱等級擁有不同的限制次數)。
 
 ## API認證機制
 TDX API皆使用OIDC Client Credentials流程進行身份認證，認證完成後即取得Access Token，將Access Token帶入即可存取TDX API服務。詳細步驟說明如下:
@@ -13,10 +14,10 @@ TDX API皆使用OIDC Client Credentials流程進行身份認證，認證完成�
 於<a href="https://tdx.transportdata.tw/register" target="_blank">TDX官網</a>註冊為TDX會員，完成Email驗證、帳號經管理員審核後即可登入TDX網站。
 
 ### 2. 取得API金鑰 
-登入TDX網站後，於<a href="https://tdx.transportdata.tw/user/dataservice/key" target="_blank">TDX會員中心</a>取得API金鑰(包含Client Id和Client Secret)，可視開發測試需求自行建立多組API金鑰(至多3組)。
+登入TDX網站後，於<a href="https://tdx.transportdata.tw/user/dataservice/key" target="_blank">TDX會員中心</a>取得API金鑰(包含Client Id和Client Secret)，可視開發測試需求自行建立多組API金鑰(目前開放至多3組)。
 
 ### 3. 取得Access Token
-取得token的url固定為 https<nolink>://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token ，使用HTTP POST方法、帶入Client Id和Client Secret進行驗證以取得Access token。以下為curl範例:     
+取得Access Token的API為**https<nolink>://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token**，使用HTTP POST方法、帶入Client Id和Client Secret進行驗證以取得Access token。以下為curl範例:     
 ```
 curl --request POST \
      --url 'https://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token' \
@@ -25,7 +26,7 @@ curl --request POST \
      --data client_id=YOUR_CLIENT_ID \
      --data client_secret=YOUR_CLIENT_SECRET \
 ```
-data參數說明如下:
+參數說明如下:
 
 | 參數 | 描述 |
 | ------ | ------ |
@@ -49,24 +50,26 @@ data參數說明如下:
 | expires_in | token的有效期限，單位為秒，預設為86400秒(1天) |
 | token_type | token類型，固定為"Bearer" |
 
-Access Token過期後，需使用同樣的方法重新取得Token，詳細說明且參考<a href="https://github.com/tdxmotc/SampleCode#5-%E9%87%8D%E6%96%B0%E5%8F%96%E5%BE%97access-token">重新取得Access Token</a>章節說明
+待Access Token產生之後，若時間超過有效期限(expires_in參數)，需使用Client Id和Client Secret重新取得Access Token。  
+
+${\color{red}提醒您，若每次呼叫API時都重新取得Access \space Token，此作法將會提升程式端與TDX環境的網路與系統運算資源的消耗，}$  
+${\color{red}未來TDX也將限制Access \space Tokne \space API的存取次數。為了讓TDX運算資源能更有效與公平的被使用，建議程式端實作Access \space Token快取機制。}$ 
+建議做法如下:    
+  - 方法1: 程式實作自動定期重新取得Token機制，如程式每4小時或6小時重取一次Access Token，每次呼叫API時皆使用該Token。  
+  - 方法2: 程式取得Access Token之後，將Access Token儲存於記憶體，在每次呼叫API時帶入該Token，若發現Token過期再重新取得Token。  
+
+**若有任何Access Token API使用方法或Token快取機制的問題，可於Issues留下您的意見，我們將盡快與您連繫。**
 
 ### 4. 呼叫TDX API服務
-將第三步驟取得的Access Token帶入HTTP Header，呼叫TDX API。curl範例如下:
+呼叫TDX API時將取得的Access Token帶入HTTP Authorization Bearer Header。curl範例如下:
 ```
 curl --request GET \
      --url TDX_API_URI \
      --header 'authorization: Bearer ACCESS_TOKEN'
 ```
 
-### 5. 重新取得Access Token
-待Access Token產生之後，若時間超過有效期限(第三步驟收到回應中的expires_in參數)，需使用Client Id和Client Secret重新取得Access Token。  
+### 5. 其他說明  
+由於TLS 1.0與TLS 1.1已被證實具有安全風險，為確保網路連線機制的安全性，TDX API與網站僅支援TLS 1.2(含)以上之傳輸加密協定。  
+TLS與Ciphers支援狀況可參考SSL Labs工具檢測後的結果:  
 
-${\color{red}提醒您，若每次呼叫API時都重新取得Access \space Token，此作法將會提升程式端與TDX環境的網路與系統資源的消耗，}$  
-${\color{red}在未來TDX也將限制Access \space Tokne \space API的存取次數，因此強烈建議程式端實作Access \space Token快取機制。}$ 
-建議做法如下:    
-  - 方法1: 程式取得Access Token之後，將Access Token儲存在記憶體，在每次呼叫API時帶入該Token，若Token過期再重新取得Token。  
-  - 方法2: 程式實作自動定期重新取得Token機制，如程式每3小時或6小時重取一次Access Token。
-
-
-
+![image](https://user-images.githubusercontent.com/44422898/198218706-9dc8baf2-d8aa-44af-be4e-261e8f576ccb.png)
