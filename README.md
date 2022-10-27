@@ -53,12 +53,12 @@ curl --request POST \
 待Access Token產生之後，若時間超過有效期限(expires_in參數)，需使用Client Id和Client Secret重新取得Access Token。  
 
 ${\color{red}提醒您，若每次呼叫API時都重新取得Access \space Token，此作法將會提升程式端與TDX環境的網路與系統運算資源的消耗，}$  
-${\color{red}未來TDX也將限制Access \space Tokne \space API的存取次數。為了讓TDX運算資源能更有效與公平的被使用，建議程式端實作Access \space Token快取機制。}$ 
+${\color{red}未來TDX也將限制Access \space Token \space API的存取次數。為了讓TDX運算資源能更有效與公平的被使用，建議程式端實作Access \space Token快取機制。}$ 
 建議做法如下:    
   - 方法1: 程式實作自動定期重新取得Token機制，如程式每4小時或6小時重取一次Access Token，每次呼叫API時皆使用該Token。  
   - 方法2: 程式取得Access Token之後，將Access Token儲存於記憶體，在每次呼叫API時帶入該Token，若發現Token過期再重新取得Token。  
 
-**若有任何Access Token API使用方法或Token快取機制的問題，可於Issues留下您的意見，我們將盡快與您連繫。**
+**若有任何Access Token API使用方法或Token快取機制的問題，可於Issues留下您的意見，我們將盡快回覆您。**
 
 ### 4. 呼叫TDX API服務
 呼叫TDX API時將取得的Access Token帶入HTTP Authorization Bearer Header。curl範例如下:
@@ -68,7 +68,9 @@ curl --request GET \
      --header 'authorization: Bearer ACCESS_TOKEN'
 ```
 
-### 5. 其他說明  
+## 其他說明
+     
+### 傳輸加密通訊協定支援狀況  
 由於TLS 1.0與TLS 1.1已被證實具有安全風險，為確保網路連線機制的安全性，TDX API與網站僅支援TLS 1.2(含)以上之傳輸加密協定。  
 TLS與Ciphers支援狀況可參考SSL Labs工具檢測後的結果:  
 
