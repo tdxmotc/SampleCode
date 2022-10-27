@@ -59,7 +59,13 @@ curl --request GET \
 ```
 
 ### 5. 重新取得Access Token
-待Access Token產生之後，若時間超過有效期限(第三步驟收到回應中的expires_in參數)，需使用Client Id和Client Secret重新取得Access Token。
+待Access Token產生之後，若時間超過有效期限(第三步驟收到回應中的expires_in參數)，需使用Client Id和Client Secret重新取得Access Token。  
+
+${\color{red}提醒您，若每次呼叫API時都重新取得Access \space Token，此作法將會提升程式端與TDX環境的網路與系統資源的消耗，}$  
+${\color{red}在未來TDX也將限制Access \space Tokne \space API的存取次數，因此強烈建議程式端實作Access \space Token快取機制。}$ 
+建議做法如下:    
+  - 方法1: 程式取得Access Token之後，將Access Token儲存在記憶體，在每次呼叫API時帶入該Token，若Token過期再重新取得Token。  
+  - 方法2: 程式實作自動定期重新取得Token機制，如程式每3小時或6小時重取一次Access Token。
 
 
 
