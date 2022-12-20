@@ -52,8 +52,8 @@ curl --request POST \
 
 待Access Token產生之後，若時間超過有效期限(expires_in參數)，需使用Client Id和Client Secret重新取得Access Token。  
 
-${\color{red}提醒您，若每次呼叫API時都重新取得Access \space Token，此作法將會提升程式端與TDX環境的網路與系統運算資源的消耗，}$  
-${\color{red}未來TDX也將限制Access \space Token \space API的存取次數。為了讓TDX運算資源能更有效與公平的被使用，建議程式端實作Access \space Token快取機制。}$ 
+提醒您，若每次呼叫API時都重新取得Access Token，此作法將會提升程式端與TDX環境的網路與系統運算資源的消耗， 
+未來TDX也將限制Access Token API的存取次數。為了讓TDX運算資源能更有效與公平的被使用，建議程式端實作Access Token快取機制。 
 建議做法如下:    
   - 方法1: 程式實作自動定期重新取得Token機制，如程式每4小時或6小時重取一次Access Token，每次呼叫API時皆使用該Token。  
   - 方法2: 程式取得Access Token之後，將Access Token儲存於記憶體，在每次呼叫API時帶入該Token，若發現Token過期再重新取得Token。  
@@ -67,7 +67,12 @@ curl --request GET \
      --url TDX_API_URI \
      --header 'authorization: Bearer ACCESS_TOKEN'
 ```
-
+     
+呼叫API時，可視需求加入Content-Encoding HTTP Header，可有效減少資料回傳量。呼叫歷史資料類型API時，使用此設定將可大幅降低資料傳輸時間。使用方式如下:
+```
+Content-Encoding: br,gzip
+```
+     
 ## 其他說明
      
 ### 傳輸加密通訊協定支援狀況  
