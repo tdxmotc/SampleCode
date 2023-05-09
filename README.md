@@ -53,7 +53,7 @@ curl --request POST \
 待Access Token產生之後，若時間超過有效期限(expires_in參數)，需使用Client Id和Client Secret重新取得Access Token。  
 您可在多個服務內同時使用同一組Client Id和Client Secret取得Access Token，新取得的token不會影響已存在token的有效性或時效性。
      
-提醒您，若每次呼叫API時都重新取得Access Token，此作法將會提升程式端與TDX環境的網路與系統運算資源的消耗。   
+提醒您，若每次呼叫API時都重新取得Access Token，此作法將會提升程式端與TDX環境的網路與運算資源的消耗。   
 為了讓平台運算資源能更有效與公平的被使用，TDX將在2023年5月中旬開始限制 **Access Token API** 可存取次數，預計採取 **每個IP來源每分鐘最多呼叫20次**。  
      
 建議您可在程式端實作Access Token快取機制，方法如下:      
