@@ -17,7 +17,7 @@ TDX API皆使用OIDC Client Credentials流程進行身份認證，認證完成�
 登入TDX網站後，於<a href="https://tdx.transportdata.tw/user/dataservice/key" target="_blank">TDX會員中心</a>取得API金鑰(包含Client Id和Client Secret)，可視開發測試需求自行建立多組API金鑰(目前開放至多3組)。
 
 ### 3. 取得Access Token
-取得Access Token的API為**https<nolink>://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token**，使用HTTP POST方法、帶入Client Id和Client Secret進行驗證以取得Access token。以下為curl範例:     
+取得Access Token的API為**https<nolink>://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token**，使用 **HTTP POST** 方法、帶入Client Id和Client Secret進行驗證以取得Access token。以下為curl範例:     
 ```
 curl --request POST \
      --url 'https://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token' \
@@ -51,12 +51,14 @@ curl --request POST \
 | token_type | token類型，固定為"Bearer" |
 
 待Access Token產生之後，若時間超過有效期限(expires_in參數)，需使用Client Id和Client Secret重新取得Access Token。  
-
-提醒您，若每次呼叫API時都重新取得Access Token，此作法將會提升程式端與TDX環境的網路與系統運算資源的消耗， 
-未來TDX也將限制Access Token API的存取次數。為了讓TDX運算資源能更有效與公平的被使用，建議程式端實作Access Token快取機制。 
-建議做法如下:    
-  - 方法1: 程式實作自動定期重新取得Token機制，如程式每4小時或6小時重取一次Access Token，每次呼叫API時皆使用該Token。  
-  - 方法2: 程式取得Access Token之後，將Access Token儲存於記憶體，在每次呼叫API時帶入該Token，若發現Token過期再重新取得Token。  
+您可在多個服務內同時使用同一組Client Id和Client Secret取得Access Token，新取得的token不會影響已存在token的有效性或時效性。
+     
+提醒您，若每次呼叫API時都重新取得Access Token，此作法將會提升程式端與TDX環境的網路與系統運算資源的消耗。   
+為了讓平台運算資源能更有效與公平的被使用，TDX將在2023年5月中旬開始限制 **Access Token API** 可存取次數，預計採取 **每個IP來源每分鐘最多呼叫20次**。  
+     
+建議您可在程式端實作Access Token快取機制，方法如下:      
+  - 方法1: 程式實作定期自動重新取得Token機制，如程式每4小時或6小時重取一次Access Token，每次呼叫API時皆使用該Token。  
+  - 方法2: 程式初始化時取得Token，每次呼叫API時帶入該Token，若發現Token過期再重新取得Token。  
 
 **若有任何Access Token API使用方法或Token快取機制的問題，可於Issues留下您的意見，我們將盡快回覆您。**
 
