@@ -70,9 +70,9 @@ curl --request GET \
      --header 'authorization: Bearer ACCESS_TOKEN'
 ```
      
-呼叫API時，可視需求加入Content-Encoding HTTP Header，可有效減少資料回傳量。呼叫歷史資料類型API時，使用此設定將可大幅降低資料傳輸時間。使用方式如下:
+呼叫API時，可視需求加入Accept-Encoding HTTP Header，可有效減少資料回傳量。呼叫歷史資料類型API時，使用此設定將可大幅降低資料傳輸時間。使用方式如下:
 ```
-Content-Encoding: br,gzip
+Accept-Encoding: br,gzip
 ```
      
 ## 其他說明
