@@ -43,6 +43,7 @@ public class TDXApi {
         
 		String accessToken = tokenElem.get("access_token").asText();
 		headers.put("authorization", String.format("Bearer %s", accessToken));
+		headers.put("Accept-Encoding", "gzip");
 		String resultJson = getJsonString(tdxUrl, headers);
 		System.out.println(resultJson);
 	}
