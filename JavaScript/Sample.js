@@ -16,6 +16,9 @@ function GetAuthorizationHeader() {
     $.ajax({
         type: "POST",
         url: auth_url,
+        headers: {
+                "Accept-Encoding": "br,gzip",
+              },  
         crossDomain:true,
         dataType:'JSON',                
         data: parameter,
@@ -39,7 +42,8 @@ function GetApiResponse(){
             type: 'GET',
             url: 'https://tdx.transportdata.tw/api/basic/v2/Rail/TRA/LiveTrainDelay?$top=30&$format=JSON',             
             headers: {
-                "authorization": "Bearer " + accesstoken.access_token,                
+                "authorization": "Bearer " + accesstoken.access_token,
+                 "Accept-Encoding": "br,gzip",
               },            
             async: false,
             success: function (Data) {
