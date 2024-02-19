@@ -49,9 +49,10 @@ namespace ASP.NET_Sample.Controllers
 
             var client = _clientFactory.CreateClient();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/x-www-form-urlencoded"));
+            client.DefaultRequestHeaders.Add("Accept-Encoding", "br,gzip");
             var response = await client.PostAsync(baseUrl, formData);
-
-            var responseContent = await response.Content.ReadAsStringAsync();
+            
+            var  responseContent = await DecompressResponse(response);
 
             return JsonConvert.DeserializeObject<AccessToken>(responseContent);
         }
@@ -70,6 +71,34 @@ namespace ASP.NET_Sample.Controllers
             };
         }
 
+        public async Task<string> DecompressResponse(HttpResponseMessage response)
+        {
+            if (response.Content.Headers.ContentEncoding.Contains("br"))
+            {
+                using (var stream = new BrotliStream(await response.Content.ReadAsStreamAsync(), CompressionMode.Decompress))
+                {
+                    using (var reader = new StreamReader(stream))
+                    {
+                        return await reader.ReadToEndAsync();
+                    }
+                }
+            }
+            else if(response.Content.Headers.ContentEncoding.Contains("gzip"))
+            {
+                using (var stream = new GZipStream(await response.Content.ReadAsStreamAsync(), CompressionMode.Decompress))
+                {
+                    using (var reader = new StreamReader(stream))
+                    {
+                        return await reader.ReadToEndAsync();
+                    }
+                }
+            }
+            else
+            {
+                return await response.Content.ReadAsStringAsync();
+            }                        
+        }    
+
 
         public async Task<string> Get(Dictionary<string, string> parameters, string requestUri, string token)
         {
@@ -78,6 +107,7 @@ namespace ASP.NET_Sample.Controllers
             if (!string.IsNullOrWhiteSpace(token))
             {
                 client.DefaultRequestHeaders.Add("authorization", $"Bearer {token}");
+                client.DefaultRequestHeaders.Add("Accept-Encoding", "br,gzip");
             }
             //client.DefaultRequestHeaders.Add("Content-Type", "application/json; charset=utf-8");
 
@@ -90,7 +120,7 @@ namespace ASP.NET_Sample.Controllers
 
             var response = await client.GetAsync(requestUri).ConfigureAwait(false);
 
-            var responseContent = await response.Content.ReadAsStringAsync();
+            var responseContent = await DecompressResponse(response);
 
             return responseContent;
         }
