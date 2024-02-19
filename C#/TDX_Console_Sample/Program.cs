@@ -24,9 +24,10 @@ namespace TDX_Console_Sample
                         }
                     );
                 httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/x-www-form-urlencoded"));
+                httpClient.DefaultRequestHeaders.Add("Accept-Encoding", "br,gzip");
 
                 var response = httpClient.PostAsync("https://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token", formData).Result;
-                var responseStr = response.Content.ReadAsStringAsync().Result;
+                var responseStr = DecompressResponse(response);
                 Console.WriteLine("Token:");
                 Console.WriteLine(responseStr);
 
@@ -40,8 +41,39 @@ namespace TDX_Console_Sample
             using (HttpClient client = new HttpClient())
             {
                 client.DefaultRequestHeaders.Add("authorization", $"Bearer {token.access_token}");
-                var apiResponse = client.GetStringAsync("https://tdx.transportdata.tw/api/basic/v2/Rail/TRA/LiveTrainDelay?$top=30&$format=JSON").Result;
+                client.DefaultRequestHeaders.Add("Accept-Encoding", "br,gzip");
+                
+                var response = client.GetAsync("https://tdx.transportdata.tw/api/basic/v2/Rail/TRA/LiveTrainDelay?$select=StationName&$top=30&$format=JSON").Result;
+                var apiResponse = DecompressResponse(response);
                 Console.WriteLine(apiResponse);
+            }
+        }
+
+        public static string DecompressResponse(HttpResponseMessage response)
+        {
+            if (response.Content.Headers.ContentEncoding.Contains("br"))
+            {
+                using (var stream = new BrotliStream(response.Content.ReadAsStreamAsync().Result, CompressionMode.Decompress))
+                {
+                    using (var reader = new StreamReader(stream))
+                    {
+                        return reader.ReadToEndAsync().Result;
+                    }
+                }
+            }
+            else if (response.Content.Headers.ContentEncoding.Contains("gzip"))
+            {
+                using (var stream = new GZipStream(response.Content.ReadAsStreamAsync().Result, CompressionMode.Decompress))
+                {
+                    using (var reader = new StreamReader(stream))
+                    {
+                        return reader.ReadToEndAsync().Result;
+                    }
+                }
+            }
+            else
+            {
+                return response.Content.ReadAsStringAsync().Result;
             }
         }
     }
