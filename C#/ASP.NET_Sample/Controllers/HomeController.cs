@@ -10,6 +10,8 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO.Compression;
+using System.IO;
 
 namespace ASP.NET_Sample.Controllers
 {
