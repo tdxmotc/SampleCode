@@ -14,8 +14,12 @@ namespace TDX_Console_Sample
         static void Main(string[] args)
         {
             AccessToken token = new AccessToken();
+            var httpClientHandler = new System.Net.Http.HttpClientHandler()
+            {
+                AutomaticDecompression = System.Net.DecompressionMethods.Brotli | System.Net.DecompressionMethods.GZip
+            };
 
-            using (HttpClient httpClient = new HttpClient())
+            using (HttpClient httpClient = new HttpClient(httpClientHandler))
             {
 
                 HttpContent formData = new FormUrlEncodedContent(
@@ -35,50 +39,18 @@ namespace TDX_Console_Sample
                 Console.WriteLine(responseStr);
 
                 token = JsonConvert.DeserializeObject<AccessToken>(responseStr);
-            }
 
-            Console.WriteLine("\n\r");
+                Console.WriteLine("\n\r");
+                Console.WriteLine("api資料:");
 
-            Console.WriteLine("api資料:");
-
-            using (HttpClient client = new HttpClient())
-            {
-                client.DefaultRequestHeaders.Add("authorization", $"Bearer {token.access_token}");
-                client.DefaultRequestHeaders.Add("Accept-Encoding", "br,gzip");
-                
-                var response = client.GetAsync("https://tdx.transportdata.tw/api/basic/v2/Rail/TRA/LiveTrainDelay?$select=StationName&$top=30&$format=JSON").Result;
-                var apiResponse = DecompressResponse(response);
+                httpClient.DefaultRequestHeaders.Add("authorization", $"Bearer {token.access_token}");
+                httpClient.DefaultRequestHeaders.Add("Accept-Encoding", "br,gzip");
+                var apiResponse = httpClient.GetStringAsync("https://tdx.transportdata.tw/api/basic/v2/Rail/TRA/LiveTrainDelay?$select=StationName&$top=30&$format=JSON").Result;
                 Console.WriteLine(apiResponse);
+
             }
         }
 
-        public static string DecompressResponse(HttpResponseMessage response)
-        {
-            if (response.Content.Headers.ContentEncoding.Contains("br"))
-            {
-                using (var stream = new BrotliStream(response.Content.ReadAsStreamAsync().Result, CompressionMode.Decompress))
-                {
-                    using (var reader = new StreamReader(stream))
-                    {
-                        return reader.ReadToEndAsync().Result;
-                    }
-                }
-            }
-            else if (response.Content.Headers.ContentEncoding.Contains("gzip"))
-            {
-                using (var stream = new GZipStream(response.Content.ReadAsStreamAsync().Result, CompressionMode.Decompress))
-                {
-                    using (var reader = new StreamReader(stream))
-                    {
-                        return reader.ReadToEndAsync().Result;
-                    }
-                }
-            }
-            else
-            {
-                return response.Content.ReadAsStringAsync().Result;
-            }
-        }
     }
 
     public class AccessToken
