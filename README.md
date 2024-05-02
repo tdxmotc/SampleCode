@@ -1,11 +1,13 @@
 # TDX運輸資料流通服務API介接範例程式碼說明
 
-
 為使開發者能快速在M2M環境下介接使用TDX運輸資料流通服務平臺之交通領域資料服務API，在此提供數種程式語言的範例程式碼提供開發者做參考。
 
-## API使用次數限制
-TDX API呼叫頻率限制已於2024/01/15改為 **每把API金鑰每秒最多呼叫50次**。  
-未來導入訂閱機制時，將依會員不同的訂閱等級而有不同的限制次數。  
+## API呼叫頻率限制
+### 1. Access Token Endpoint(用來取得Access Token)  
+每個IP來源每分鐘最多呼叫20次。
+
+### 2. API Endpoint(用來取得公共運輸資料)  
+自113年4月29日中午12:00起，**每把API金鑰呼叫次數限制將視會員訂閱的方案而有所不同**，各個方案的存取頻率限制說明請參考<a href="https://tdx.transportdata.tw/pricing" target="_blank">訂閱收費</a>。
 
 ## API認證機制
 TDX API皆使用OIDC Client Credentials流程進行身份認證，認證完成後即取得Access Token，將Access Token帶入即可存取TDX API服務。詳細步驟說明如下:
@@ -17,7 +19,7 @@ TDX API皆使用OIDC Client Credentials流程進行身份認證，認證完成�
 登入TDX網站後，於<a href="https://tdx.transportdata.tw/user/dataservice/key" target="_blank">TDX會員中心</a>取得API金鑰(包含Client Id和Client Secret)，可視開發測試需求自行建立多組API金鑰(目前開放至多3組)。
 
 ### 3. 取得Access Token
-取得Access Token的API為**https<nolink>://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token**，使用 **HTTP POST** 方法、帶入Client Id和Client Secret進行驗證以取得Access token。以下為curl範例:     
+Access Token Endpoint為**https<nolink>://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token**，使用 **HTTP POST** 方法、帶入Client Id和Client Secret進行驗證以取得Access token。以下為curl範例:     
 ```
 curl --request POST \
      --url 'https://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token' \
@@ -54,7 +56,7 @@ curl --request POST \
 您可在多個服務內同時使用同一組Client Id和Client Secret取得Access Token，新取得的token不會影響已存在token的有效性或時效性。
      
 提醒您，若每次呼叫API時都重新取得Access Token，此作法將會提升程式端與TDX環境的網路與運算資源的消耗。   
-為了讓平台運算資源能更有效與公平的被使用，TDX已於2023/05/15開始限制 **Access Token API** 可存取次數: **每個IP來源每分鐘最多呼叫20次**。  
+為了讓平台運算資源能更有效與公平的被使用，**Access Token Endpoint**的存取頻率次數限制為**每個IP來源每分鐘最多呼叫20次**。  
      
 建議您可在程式端實作Access Token快取機制，方法如下:      
   - 方法1: 程式實作定期自動重新取得Token機制，如程式每4小時或6小時重取一次Access Token，每次呼叫API時皆使用該Token。  
