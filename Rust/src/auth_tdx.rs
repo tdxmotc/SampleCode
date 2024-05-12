@@ -1,6 +1,5 @@
 use core::result::Result;
-use reqwest::header::AUTHORIZATION;
-use reqwest::{header::CONTENT_TYPE, *};
+use reqwest::{header::CONTENT_TYPE, header::AUTHORIZATION, *};
 use serde_json::*;
 use std::error::Error;
 
