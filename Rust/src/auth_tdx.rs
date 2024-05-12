@@ -1,11 +1,13 @@
 use core::result::Result;
+use reqwest::header::AUTHORIZATION;
 use reqwest::{header::CONTENT_TYPE, *};
 use serde_json::*;
 use std::error::Error;
 use std::{collections::HashMap, fs::File, path::Path};
 
-static AUTH_URL: &str = "https://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token";
-//static TEST_URL: &str = "https://tdx.transportdata.tw/api/basic/v2/Rail/TRA/LiveTrainDelay?$top=30&$format=JSON";
+static AUTH_URL: &str =
+    "https://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token";
+static TEST_URL: &str = "https://tdx.transportdata.tw/api/basic/v2/Rail/TRA/LiveBoard/Station/1000?$filter=Direction eq 1&$format=JSON";
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
@@ -30,12 +32,18 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
         .send()
         .await?;
 
-    let data_header = auth_response.text().await?;
-    let access_token = data_header.contains("access_token");
+    let response_text = auth_response.text().await?;
+    let data_header = response_text.split_once("\":\"").unwrap().1;
+    let access_token = format!("Bearer {}", data_header.split_once("\",").unwrap().0);
 
-    println!("{:?}", access_token);
+    let data_response = client
+        .get(TEST_URL)
+        .header(AUTHORIZATION, access_token)
+        .send()
+        .await?;
+    let response_text = data_response.text().await?;
 
-    //let data_response = client.get(TEST_URL).bearer_auth(access_token);
+    println!("{:?}", response_text);
 
     Ok(())
 }
