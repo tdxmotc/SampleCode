@@ -43,8 +43,6 @@ class data():
 
 if __name__ == '__main__':
     try:
-        a = Auth(app_id, app_key)
-        auth_response = requests.post(auth_url, a.get_auth_header())
         d = data(app_id, app_key, auth_response)
         data_response = requests.get(url, headers=d.get_data_header())
     except:
