@@ -4,7 +4,8 @@
 
 ## API呼叫頻率限制
 ### 1. Access Token Endpoint(用來取得Access Token)  
-每個IP來源每分鐘最多呼叫20次。
+**每個IP來源每分鐘最多呼叫20次**。  
+(此限制與API Endpoint呼叫頻率限制為分開計算)
 
 ### 2. API Endpoint(用來取得公共運輸資料)  
 自113年4月29日中午12:00起，**每把API金鑰呼叫次數限制將視會員訂閱的方案而有所不同**，各個方案的存取頻率限制說明請參考<a href="https://tdx.transportdata.tw/pricing" target="_blank">訂閱收費</a>。
@@ -72,7 +73,7 @@ curl --request GET \
      --header 'authorization: Bearer ACCESS_TOKEN'
 ```
      
-呼叫API時，可視需求加入Accept-Encoding HTTP Header，可有效減少資料回傳量。呼叫歷史資料類型API時，使用此設定將可大幅降低資料傳輸時間。使用方式如下:
+呼叫API時，可視需求加入Accept-Encoding HTTP Header，可有效減少資料回傳量。呼叫歷史資料類型API時，使用此設定將可大幅降低資料傳輸時間。目前TDX API服務端支援`br`和`gzip`兩種模式，Client端可依自身支援的方法來決定Accept-Encoding Header要帶入哪一種模式。使用方式參考如下:
 ```
 Accept-Encoding: br,gzip
 ```
