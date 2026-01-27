@@ -1,14 +1,14 @@
-let accesstokenEl;
-let apireponseEl;
+let accessTokenEl;
+let apiResponseEl;
 
 document.addEventListener("DOMContentLoaded", async () => {
-    accesstokenEl = document.getElementById("accesstoken");
-    apireponseEl = document.getElementById("apireponse");
-    await GetAuthorizationHeader();
-    await GetApiResponse();
+    accessTokenEl = document.getElementById("accesstoken");
+    apiResponseEl = document.getElementById("apireponse");
+    await getAuthorizationHeader();
+    await getApiResponse();
 });
 
-async function GetAuthorizationHeader() {
+async function getAuthorizationHeader() {
     const parameter = {
         grant_type: "client_credentials",
         client_id: "XXXXXXXXXX-XXXXXXXX-XXXX-XXXX",
@@ -33,23 +33,23 @@ async function GetAuthorizationHeader() {
         }
 
         const data = await response.json();
-        accesstokenEl.textContent = JSON.stringify(data);
+        accessTokenEl.textContent = JSON.stringify(data);
     } catch (error) {
         console.error("Auth error:", error);
     }
 }
 
-async function GetApiResponse() {
-    const accesstokenStr = accesstokenEl.textContent;
+async function getApiResponse() {
+    const accessTokenStr = accessTokenEl.textContent;
 
-    const accesstoken = JSON.parse(accesstokenStr);
+    const accessToken = JSON.parse(accessTokenStr);
 
-    if (accesstoken != undefined) {
+    if (accessToken != undefined) {
         try {
             const response = await fetch("https://tdx.transportdata.tw/api/basic/v2/Rail/TRA/LiveTrainDelay?$top=30&$format=JSON", {
                 method: "GET",
                 headers: {
-                    "authorization": "Bearer " + accesstoken.access_token,
+                    "authorization": "Bearer " + accessToken.access_token,
                     "Accept-Encoding": "br,gzip"
                 }
             });
@@ -59,7 +59,7 @@ async function GetApiResponse() {
             }
 
             const data = await response.json();
-            apireponseEl.textContent = JSON.stringify(data);
+            apiResponseEl.textContent = JSON.stringify(data);
             console.log("Data", data);
         } catch (error) {
             console.error("API error:", error);
