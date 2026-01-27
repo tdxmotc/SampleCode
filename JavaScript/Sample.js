@@ -1,59 +1,68 @@
-$(function () {
-    GetAuthorizationHeader();
-    
-    GetApiResponse();    
+let accesstokenEl;
+let apireponseEl;
+
+document.addEventListener("DOMContentLoaded", async () => {
+    accesstokenEl = document.getElementById("accesstoken");
+    apireponseEl = document.getElementById("apireponse");
+    await GetAuthorizationHeader();
+    await GetApiResponse();
 });
 
-function GetAuthorizationHeader() {    
+async function GetAuthorizationHeader() {
     const parameter = {
-        grant_type:"client_credentials",
+        grant_type: "client_credentials",
         client_id: "XXXXXXXXXX-XXXXXXXX-XXXX-XXXX",
         client_secret: "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
     };
-    
-    let auth_url = "https://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token";
-        
-    $.ajax({
-        type: "POST",
-        url: auth_url,
-        headers: {
+
+    const authUrl = "https://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token";
+
+    try {
+        const body = new URLSearchParams(parameter);
+        const response = await fetch(authUrl, {
+            method: "POST",
+            headers: {
                 "Accept-Encoding": "br,gzip",
-              },  
-        crossDomain:true,
-        dataType:'JSON',                
-        data: parameter,
-        async: false,       
-        success: function(data){            
-            $("#accesstoken").text(JSON.stringify(data));                            
-        },
-        error: function (xhr, textStatus, thrownError) {
-            
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body
+        });
+
+        if (!response.ok) {
+            throw new Error(`Auth request failed: ${response.status} ${response.statusText}`);
         }
-    });          
+
+        const data = await response.json();
+        accesstokenEl.textContent = JSON.stringify(data);
+    } catch (error) {
+        console.error("Auth error:", error);
+    }
 }
 
-function GetApiResponse(){    
-    let accesstokenStr = $("#accesstoken").text();    
+async function GetApiResponse() {
+    const accesstokenStr = accesstokenEl.textContent;
 
-    let accesstoken = JSON.parse(accesstokenStr);    
+    const accesstoken = JSON.parse(accesstokenStr);
 
-    if(accesstoken !=undefined){
-        $.ajax({
-            type: 'GET',
-            url: 'https://tdx.transportdata.tw/api/basic/v2/Rail/TRA/LiveTrainDelay?$top=30&$format=JSON',             
-            headers: {
-                "authorization": "Bearer " + accesstoken.access_token,
-                 "Accept-Encoding": "br,gzip",
-              },            
-            async: false,
-            success: function (Data) {
-                $('#apireponse').text(JSON.stringify(Data));                
-                console.log('Data', Data);
-            },
-            error: function (xhr, textStatus, thrownError) {
-                console.log('errorStatus:',textStatus);
-                console.log('Error:',thrownError);
+    if (accesstoken != undefined) {
+        try {
+            const response = await fetch("https://tdx.transportdata.tw/api/basic/v2/Rail/TRA/LiveTrainDelay?$top=30&$format=JSON", {
+                method: "GET",
+                headers: {
+                    "authorization": "Bearer " + accesstoken.access_token,
+                    "Accept-Encoding": "br,gzip"
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`API request failed: ${response.status} ${response.statusText}`);
             }
-        });
+
+            const data = await response.json();
+            apireponseEl.textContent = JSON.stringify(data);
+            console.log("Data", data);
+        } catch (error) {
+            console.error("API error:", error);
+        }
     }
 }
