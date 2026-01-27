@@ -5,3 +5,4 @@ Node.js/node_modules
 .Rdata
 .httr-oauth
 .DS_Store
+Rust/target/

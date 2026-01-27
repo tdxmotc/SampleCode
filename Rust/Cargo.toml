@@ -1,0 +1,13 @@
+[package]
+name = "Rust"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+reqwest = {version = "*", features = ["json"]}
+serde_json = "*"
+tokio = {version = "*", features = ["full"]}
+
+[[bin]]
+name = "auth_tdx"
+path = "src/auth_tdx.rs"
